@@ -90,26 +90,26 @@ class _GoPremiumScreenState extends State<GoPremiumScreen> {
                   child: Image.asset(
                     AppAssets.goPremium1,
                     fit: BoxFit.cover,
-                    height: 200,
+                    height: 80,
                     width: double.infinity,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 12),
                 Text(
                   '高级功能',
                   style: AppTextStyles.heading2,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 6),
                 Text(
                   '解锁所有高级功能，享受更快速、更安全的VPN服务',
                   style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColors.textSecondaryColor,
                   ),
                 ),
-                const SizedBox(height: 32),
+                const SizedBox(height: 22),
                 // 高级功能列表
                 _buildFeaturesList(),
-                const SizedBox(height: 32),
+                const SizedBox(height: 2),
                 // 订阅计划
                 for (int i = 0; i < _plans.length; i++) ...[
                   _buildPlanCard(
@@ -119,12 +119,12 @@ class _GoPremiumScreenState extends State<GoPremiumScreen> {
                   ),
                   const SizedBox(height: 16),
                 ],
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 CustomButton(
                   text: AppStrings.subscribe,
                   onPressed: _subscribe,
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 8),
                 Center(
                   child: TextButton(
                     onPressed: () {},

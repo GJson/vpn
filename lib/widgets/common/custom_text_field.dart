@@ -90,6 +90,25 @@ class _CustomTextFieldState extends State<CustomTextField> {
             onFieldSubmitted: widget.onSubmitted,
             style: AppTextStyles.bodyMedium,
             focusNode: _focusNode,
+            showCursor: true,
+            cursorWidth: 2.0,
+            cursorRadius: const Radius.circular(1),
+            cursorColor: AppColors.primaryColor,
+            enableInteractiveSelection: true,
+            textAlign: TextAlign.left,
+            textAlignVertical: TextAlignVertical.center,
+            toolbarOptions: const ToolbarOptions(
+              copy: true,
+              cut: true,
+              paste: true,
+              selectAll: true,
+            ),
+            selectionControls: MaterialTextSelectionControls(),
+            contextMenuBuilder: (context, editableTextState) {
+              return AdaptiveTextSelectionToolbar.editableText(
+                editableTextState: editableTextState,
+              );
+            },
             decoration: InputDecoration(
               hintText: widget.hint,
               hintStyle: AppTextStyles.bodyMedium.copyWith(

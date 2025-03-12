@@ -9,7 +9,7 @@ class ModernVpnIcon extends StatelessWidget {
   final Color secondaryColor;
   final Color textColor;
   final double shadowOpacity;
-
+  
   const ModernVpnIcon({
     Key? key,
     this.size = 60,
@@ -48,6 +48,18 @@ class ModernVpnIconStyle {
       primaryColor: const Color(0xFF4A80F0),
       secondaryColor: const Color(0xFF64B5F6),
       textColor: Colors.white,
+    );
+  }
+  
+  // 明亮风格 - 浅色背景，主题蓝
+  static Widget light({double size = 60}) {
+    return ModernVpnIcon(
+      size: size,
+      backgroundColor: Colors.white,
+      primaryColor: const Color(0xFF4A80F0),
+      secondaryColor: const Color(0xFFE3EDFB),
+      textColor: const Color(0xFF4A80F0),
+      shadowOpacity: 0.1,
     );
   }
   

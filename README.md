@@ -1,4 +1,4 @@
-# SecureVPN - Flutter VPN应用
+# WS VPN - Flutter VPN应用
 
 这是一个使用Flutter开发的VPN应用示例，具有现代化UI设计和完整的用户流程。
 
@@ -45,7 +45,4 @@ lib/
 
 项目使用的设计资源位于 `design/设计资源/` 目录，包含应用的所有UI设计图。
 
-## 注意事项
 
-这个项目只是一个UI演示，没有实现真正的VPN功能。在实际应用中，需要集成VPN库或开发原生插件来实现真正的VPN功能。
-# VPN

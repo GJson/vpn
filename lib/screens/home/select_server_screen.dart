@@ -196,98 +196,158 @@ class _SelectServerScreenState extends State<SelectServerScreen> with SingleTick
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(
-        title: const Text(
-          AppStrings.selectServer,
-          style: TextStyle(
-            color: AppColors.textPrimaryColor,
-            fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      behavior: HitTestBehavior.translucent,
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        appBar: AppBar(
+          title: const Text(
+            AppStrings.selectServer,
+            style: TextStyle(
+              color: AppColors.textPrimaryColor,
+              fontWeight: FontWeight.w600,
+            ),
           ),
+          centerTitle: true,
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          iconTheme: const IconThemeData(color: AppColors.textPrimaryColor),
         ),
-        centerTitle: true,
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        iconTheme: const IconThemeData(color: AppColors.textPrimaryColor),
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: AppStrings.searchServer,
-                  hintStyle: TextStyle(color: AppColors.textLightColor),
-                  prefixIcon: const Icon(Icons.search, color: AppColors.textLightColor),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: AppColors.primaryColor),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                child: TextField(
+                  controller: _searchController,
+                  onTapOutside: (_) => FocusScope.of(context).unfocus(),
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: (_) => FocusScope.of(context).unfocus(),
+                  decoration: InputDecoration(
+                    hintText: AppStrings.searchServer,
+                    hintStyle: TextStyle(color: AppColors.textLightColor),
+                    prefixIcon: const Icon(Icons.search, color: AppColors.textLightColor),
+                    filled: true,
+                    fillColor: Colors.white,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: AppColors.primaryColor),
+                    ),
                   ),
                 ),
               ),
-            ),
-            TabBar(
-              controller: _tabController,
-              indicatorColor: AppColors.primaryColor,
-              labelColor: AppColors.primaryColor,
-              unselectedLabelColor: AppColors.textSecondaryColor,
-              tabs: const [
-                Tab(text: '免费服务器'),
-                Tab(text: '高级服务器'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildServerList(),
-                  _buildServerList(),
-                ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border(
+                      bottom: BorderSide(
+                        color: Colors.grey.withOpacity(0.1),
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorColor: AppColors.primaryColor,
+                    labelColor: AppColors.primaryColor,
+                    unselectedLabelColor: AppColors.textSecondaryColor,
+                    indicatorWeight: 3,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    labelStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    padding: EdgeInsets.zero,
+                    tabs: const [
+                      Tab(
+                        height: 46,
+                        text: '免费服务器',
+                      ),
+                      Tab(
+                        height: 46,
+                        text: '高级服务器',
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    // 免费服务器列表
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification is ScrollStartNotification) {
+                          FocusScope.of(context).unfocus();
+                        }
+                        return true;
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        itemCount: _filteredServers.length,
+                        itemBuilder: (context, index) {
+                          final server = _filteredServers[index];
+                          return _buildServerItem(
+                            server.name,
+                            server.ping,
+                            server.isPremium,
+                            _selectedServer == server.name,
+                          );
+                        },
+                      ),
+                    ),
+                    // 高级服务器列表
+                    NotificationListener<ScrollNotification>(
+                      onNotification: (notification) {
+                        if (notification is ScrollStartNotification) {
+                          FocusScope.of(context).unfocus();
+                        }
+                        return true;
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
+                        itemCount: _filteredServers.length,
+                        itemBuilder: (context, index) {
+                          final server = _filteredServers[index];
+                          return _buildServerItem(
+                            server.name,
+                            server.ping,
+                            server.isPremium,
+                            _selectedServer == server.name,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
   
-  Widget _buildServerList() {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
-      itemCount: _filteredServers.length,
-      itemBuilder: (context, index) {
-        final server = _filteredServers[index];
-        final bool isSelected = _selectedServer == server.name;
-        
-        return _buildServerItem(
-          server: server,
-          isSelected: isSelected,
-          onTap: () => _selectServer(server.name, server.isPremium),
-        );
-      },
-    );
-  }
-  
-  Widget _buildServerItem({
-    required ServerItem server,
-    required bool isSelected,
-    required VoidCallback onTap,
-  }) {
+  Widget _buildServerItem(String name, int ping, bool isPremium, bool isSelected) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _selectServer(name, isPremium),
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         padding: const EdgeInsets.all(16),
@@ -332,12 +392,12 @@ class _SelectServerScreenState extends State<SelectServerScreen> with SingleTick
                   Row(
                     children: [
                       Text(
-                        server.name,
+                        name,
                         style: AppTextStyles.bodyLarge.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (server.isPremium) ...[
+                      if (isPremium) ...[
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -362,8 +422,10 @@ class _SelectServerScreenState extends State<SelectServerScreen> with SingleTick
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '延迟: ${server.ping}ms',
-                    style: AppTextStyles.bodySmall,
+                    '延迟: ${ping}ms',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColors.textSecondaryColor,
+                    ),
                   ),
                 ],
               ),

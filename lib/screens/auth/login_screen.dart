@@ -119,118 +119,148 @@ class _LoginScreenState extends State<LoginScreen> {
       },
       child: Scaffold(
         backgroundColor: AppColors.backgroundColor,
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 40),
-                    Text(
-                      AppStrings.login,
-                      style: AppTextStyles.heading1,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      '欢迎回来，请登录您的账户',
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        color: AppColors.textSecondaryColor,
+          bottom: false,  // 不为底部安全区域留空
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                physics: const ClampingScrollPhysics(),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: constraints.maxHeight,
+                  ),
+                  child: IntrinsicHeight(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        left: 24.0,
+                        right: 24.0,
+                        top: 24.0,
+                        bottom: MediaQuery.of(context).viewInsets.bottom + MediaQuery.of(context).padding.bottom + 80.0,
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    GestureDetector(
-                      onTap: () {
-                        KeyboardUtils.forceShowKeyboard(context, _emailFocusNode);
-                      },
-                      child: CustomTextField(
-                        label: AppStrings.email,
-                        hint: '请输入您的电子邮箱',
-                        controller: _emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        validator: _validateEmail,
-                        prefixIcon: const Icon(Icons.email_outlined),
-                        focusNode: _emailFocusNode,
-                        autofocus: true, // 自动获取焦点
-                        onSubmitted: (_) => FocusScope.of(context).requestFocus(_passwordFocusNode),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () {
-                        KeyboardUtils.forceShowKeyboard(context, _passwordFocusNode);
-                      },
-                      child: CustomTextField(
-                        label: AppStrings.password,
-                        hint: '请输入您的密码',
-                        controller: _passwordController,
-                        isPassword: true,
-                        validator: _validatePassword,
-                        prefixIcon: const Icon(Icons.lock_outline),
-                        focusNode: _passwordFocusNode,
-                        onSubmitted: (_) => _login(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const ForgetPasswordScreen(),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          AppStrings.forgotPassword,
-                          style: AppTextStyles.linkText,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 32),
-                    CustomButton(
-                      text: AppStrings.login,
-                      onPressed: _login,
-                      isLoading: _isLoading,
-                    ),
-                    const SizedBox(height: 24),
-                    Center(
-                      child: TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterScreen(),
-                            ),
-                          );
-                        },
-                        child: RichText(
-                          text: TextSpan(
-                            text: '${AppStrings.dontHaveAccount} ',
-                            style: AppTextStyles.bodyMedium.copyWith(
-                              color: AppColors.textSecondaryColor,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: AppStrings.createAccount,
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColors.primaryColor,
-                                  fontWeight: FontWeight.w600,
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: 40),
+                                Text(
+                                  AppStrings.login,
+                                  style: AppTextStyles.heading1,
                                 ),
-                              ),
-                            ],
-                          ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  '欢迎回来，请登录您的账户',
+                                  style: AppTextStyles.bodyMedium.copyWith(
+                                    color: AppColors.textSecondaryColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 40),
+                                GestureDetector(
+                                  onTap: () {
+                                    KeyboardUtils.forceShowKeyboard(context, _emailFocusNode);
+                                  },
+                                  child: CustomTextField(
+                                    label: AppStrings.email,
+                                    hint: '请输入您的电子邮箱',
+                                    controller: _emailController,
+                                    keyboardType: TextInputType.emailAddress,
+                                    validator: _validateEmail,
+                                    prefixIcon: const Icon(Icons.email_outlined),
+                                    focusNode: _emailFocusNode,
+                                    autofocus: true,
+                                    onSubmitted: (_) => FocusScope.of(context).requestFocus(_passwordFocusNode),
+                                  ),
+                                ),
+                                const SizedBox(height: 24),
+                                GestureDetector(
+                                  onTap: () {
+                                    KeyboardUtils.forceShowKeyboard(context, _passwordFocusNode);
+                                  },
+                                  child: CustomTextField(
+                                    label: AppStrings.password,
+                                    hint: '请输入您的密码',
+                                    controller: _passwordController,
+                                    isPassword: true,
+                                    validator: _validatePassword,
+                                    prefixIcon: const Icon(Icons.lock_outline),
+                                    focusNode: _passwordFocusNode,
+                                    onSubmitted: (_) => _login(),
+                                  ),
+                                ),
+                                const SizedBox(height: 16),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const ForgetPasswordScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: Text(
+                                      AppStrings.forgotPassword,
+                                      style: AppTextStyles.linkText,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                CustomButton(
+                                  text: AppStrings.login,
+                                  onPressed: _login,
+                                  isLoading: _isLoading,
+                                ),
+                                const SizedBox(height: 24),
+                                Center(
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => const RegisterScreen(),
+                                        ),
+                                      );
+                                    },
+                                    child: RichText(
+                                      text: TextSpan(
+                                        text: '${AppStrings.dontHaveAccount} ',
+                                        style: AppTextStyles.bodyMedium.copyWith(
+                                          color: AppColors.textSecondaryColor,
+                                        ),
+                                        children: [
+                                          TextSpan(
+                                            text: AppStrings.createAccount,
+                                            style: AppTextStyles.bodyMedium.copyWith(
+                                              color: AppColors.primaryColor,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: MediaQuery.of(context).viewInsets.bottom > 0 ? 40 : 0),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),
