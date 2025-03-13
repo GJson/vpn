@@ -2,6 +2,15 @@
 
 这是一个使用Flutter开发的VPN应用示例，具有现代化UI设计和完整的用户流程。
 
+## 应用预览
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src="demo/1.png" width="200" alt="应用预览1"/>
+    <img src="demo/2.png" width="200" alt="应用预览2"/>
+    <img src="demo/3.png" width="200" alt="应用预览3"/>
+    <img src="demo/4.png" width="200" alt="应用预览4"/>
+</div>
+
 ## 功能特点
 
 - 精美的用户界面，遵循现代设计原则
