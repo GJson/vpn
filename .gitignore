@@ -88,3 +88,4 @@ mason-lock.json
 # Environment files
 .env*
 *.env.dart
+.cursor/rules/base-rules.mdc
