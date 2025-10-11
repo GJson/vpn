@@ -10,8 +10,8 @@ enum VpnStatus {
   error
 }
 
+// 模拟的VPN服务类，用于演示目的
 class VpnService {
-  static const _channel = MethodChannel('com.ws.vpn/vpn');
   static final VpnService _instance = VpnService._internal();
   
   factory VpnService() {
@@ -19,7 +19,8 @@ class VpnService {
   }
   
   VpnService._internal() {
-    _channel.setMethodCallHandler(_handleMethodCall);
+    // 在真实实现中，这里会设置方法调用处理程序
+    // _channel.setMethodCallHandler(_handleMethodCall);
   }
 
   final _statusController = StreamController<VpnStatus>.broadcast();
@@ -27,6 +28,7 @@ class VpnService {
   VpnStatus _currentStatus = VpnStatus.disconnected;
   VpnStatus get currentStatus => _currentStatus;
 
+  // 模拟连接VPN
   Future<void> connect(String ovpnConfig) async {
     if (_currentStatus == VpnStatus.connecting || _currentStatus == VpnStatus.connected) {
       return;
@@ -35,21 +37,19 @@ class VpnService {
     try {
       _updateStatus(VpnStatus.connecting);
       
-      if (Platform.isIOS) {
-        await _channel.invokeMethod('connect', {
-          'ovpn': ovpnConfig,
-        });
-      } else if (Platform.isAndroid) {
-        await _channel.invokeMethod('connect', {
-          'ovpn': ovpnConfig,
-        });
-      }
+      // 模拟连接延迟
+      await Future.delayed(const Duration(seconds: 2));
+      
+      _updateStatus(VpnStatus.connected);
+      print('VPN 已连接 (模拟)');
     } catch (e) {
       _updateStatus(VpnStatus.error);
+      print('VPN 连接错误: $e (模拟)');
       rethrow;
     }
   }
 
+  // 模拟断开VPN连接
   Future<void> disconnect() async {
     if (_currentStatus == VpnStatus.disconnected || _currentStatus == VpnStatus.disconnecting) {
       return;
@@ -57,51 +57,27 @@ class VpnService {
 
     try {
       _updateStatus(VpnStatus.disconnecting);
-      await _channel.invokeMethod('disconnect');
+      
+      // 模拟断开连接延迟
+      await Future.delayed(const Duration(seconds: 1));
+      
+      _updateStatus(VpnStatus.disconnected);
+      print('VPN 已断开连接 (模拟)');
     } catch (e) {
       _updateStatus(VpnStatus.error);
+      print('VPN 断开连接错误: $e (模拟)');
       rethrow;
     }
   }
 
+  // 检查VPN是否已连接
   Future<bool> get isConnected async {
-    try {
-      final result = await _channel.invokeMethod<bool>('checkStatus');
-      return result ?? false;
-    } catch (e) {
-      return false;
-    }
+    return _currentStatus == VpnStatus.connected;
   }
 
   void _updateStatus(VpnStatus status) {
     _currentStatus = status;
     _statusController.add(status);
-  }
-
-  Future<void> _handleMethodCall(MethodCall call) async {
-    switch (call.method) {
-      case 'updateStatus':
-        final status = _parseStatus(call.arguments as String);
-        _updateStatus(status);
-        break;
-    }
-  }
-
-  VpnStatus _parseStatus(String status) {
-    switch (status.toLowerCase()) {
-      case 'connected':
-        return VpnStatus.connected;
-      case 'connecting':
-        return VpnStatus.connecting;
-      case 'disconnected':
-        return VpnStatus.disconnected;
-      case 'disconnecting':
-        return VpnStatus.disconnecting;
-      case 'error':
-        return VpnStatus.error;
-      default:
-        return VpnStatus.error;
-    }
   }
 
   void dispose() {

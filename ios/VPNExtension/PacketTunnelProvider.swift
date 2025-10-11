@@ -30,6 +30,17 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         // 配置VPN适配器
         vpnAdapter.delegate = self
         
+            .............................
+        
+        
+        
+        
+        
+        
+        
+        
+        00
+        
         do {
             try vpnAdapter.apply(configuration: configuration)
             try vpnAdapter.connect()
